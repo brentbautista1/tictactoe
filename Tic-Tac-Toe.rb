@@ -84,12 +84,11 @@ class TicTacToe
 				end
 			end
 			if check_x == 3 || check_y == 3
-				return true
+				return 1
 			end
 			#checks for diagonal win!
 			unless ((choice_x == 0 || choice_x == 2) && (choice_y == 0 || choice_y == 2)) || (choice_x == 1 && choice_y == 1)
-				print "hello!"
-				return false
+				return 0
 			else
 				check_backslash = 0
 				x = 0
@@ -103,9 +102,21 @@ class TicTacToe
 					end
 				end
 				if check_foreslash == 3 || check_backslash == 3
-					return true
+					return 1
+				end
+				#checks if no moves are left therefore tying the game
+				check_tie = 0
+				@board.board.each do |row|
+					row.each do |element|
+						if element == 0
+							check_tie += 1
+						end
+					end
+				end
+				if check_tie == 0
+					return 2
 				else
-					return false
+					return 0
 				end
 			end
 		end
@@ -122,22 +133,24 @@ puts 'Enter player 2 name: "o"'
 p2_name = gets.chomp
 p2 = Player.new(p2_name, 'o')
 
-game_status = false
+game_status = 0
 i = 0
 
-while !game_status
+while game_status == 0
 	board.display
 	if i%2 == 0
 		player = p1
 	else
 		player = p2
 	end
-	puts game_status
 	puts "#{player.name}! Choose a move!"
 	choice_x = gets.chomp
 	choice_y = gets.chomp
 	i += game.choose(player, choice_x, choice_y)
 	game_status = game.check_status_of_game(player, choice_x, choice_y)
 end
-
-puts "Game is finished! #{player.name} won!"
+if game_status == 1
+	puts "Game is finished! #{player.name} won!"
+else
+	puts "Game is tied!"
+end
